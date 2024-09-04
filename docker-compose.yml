@@ -1,0 +1,34 @@
+version: "3"
+services:
+  db:
+    image: mysql:latest
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: MURAT
+    ports:
+      - "3306:3306"
+    networks:
+      - mura-net
+    expose:
+      - 3306
+    restart: unless-stopped
+  app:
+    build: .
+    ports:
+      - "4000:4000"
+    networks:
+      - mura-net
+    depends_on:
+      - db
+    expose:
+      - 4000
+    environment:
+      DB_HOST: db
+      DB_DATABASE: MURAT
+      DB_USER: root
+      DB_PASSWORD: 12345
+      DB_PORT: 3306
+networks:
+  mura-net:
+    driver: bridge
